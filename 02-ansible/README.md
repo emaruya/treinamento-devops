@@ -1,3 +1,5 @@
- ansible-playbook -i hosts provisionar.yml -u ubuntu --private-key ../../id_rsa_itau_treinamento
+ ansible-playbook -i hosts inicio.yml -u ubuntu --private-key "~/.ssh/id_rsa"
 
- ssh -i ../../id_rsa_itau_treinamento ubuntu@ec2-3-93-240-108.compute-1.amazonaws.com
+ ssh -i /home/ubuntu/.ssh/id_rsa ubuntu@ec2-54-232-167-40.sa-east-1.compute.amazonaws.com
+
+ ansible-playbook rds_prod.yml  --syntax-check # confere a sintax do arquivo yml

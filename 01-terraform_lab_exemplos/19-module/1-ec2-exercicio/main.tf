@@ -1,8 +1,8 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "sa-east-1"
 }
 
 module "criar_instancia" {
-  source = "./instancia"
+  source = "git@github.com:emaruya/erika-module.git"
   nome = "Um nome"
 }

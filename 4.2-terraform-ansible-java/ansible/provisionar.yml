@@ -1,0 +1,63 @@
+- hosts: all
+
+  handlers:
+    - name: "restart nginx"
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+
+  tasks:
+    - name: "Roda: sudo apt-get update"
+      become: yes
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #Um dia
+
+    - name: "Instala pacotes"
+      apt:
+        name: "{{ item }}"
+        state: latest
+      become: yes # roda com sudo
+      with_items:
+        - nginx
+        - maven
+        - default-jre
+        - mysql-server
+    
+    - name: "clone projeto"
+      ansible.builtin.git:
+        repo: 'https://github.com/torneseumprogramador/spring-web-youtube.git'
+        dest: /home/ubuntu/spring-web-youtube
+        clone: yes
+        update: yes
+    
+    - name: "Lavanta serviço do mysql"
+      become: yes
+      service:
+        name: mysql
+        state: started
+
+    - name: "Cria o banco de dados MySQL"
+      mysql_db:
+        name: treinamento_database
+        login_user: root
+        login_password: Senha&12_torne00
+        state: present
+
+    - name: "fazendo build da package"
+      shell: "cd ~/spring-web-youtube/ && mvn package"
+
+    - name: "inicia a VPS"
+      shell: "cd ~/spring-web-youtube/ && mvn nohup mvn spring-boot:start &"
+
+
+# *** verifica se aplicação está de pé
+# sudo lsof -iTCP -sTCP:LISTEN -P | grep :5001
+
+# *** verifica log acesso
+# tail -f /var/log/nginx/access.log
+
+# *** verifica log error
+# tail -f /var/log/nginx/error.log

@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nodeport-pod-nodejs
+  name: nodeport-pod-java
 spec:
   type: NodePort
   ports:
     - port: 80
       nodePort: 30001 # 30000 ~ 32767
   selector:
-    app: didox-nginx
+    app: emaruya-java
 
 # kubectl apply -f node-port-nginx.yml
 # kubectl describe -f node-port-nginx.yml

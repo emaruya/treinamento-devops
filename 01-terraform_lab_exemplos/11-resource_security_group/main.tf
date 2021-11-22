@@ -1,13 +1,20 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "sa-east-1"
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-09e67e426f25ce0d7"
+  subnet_id     = "subnet-07384d1338e0f2f61"
+  ami           = "ami-04526d8a7e0b5fb27"
   instance_type = "t2.micro"
-  key_name = "treinamento-turma1_itau" # Nome da Key gerada pelo ssk-keygem e upada na AWS
-  tags = {
-    Name = "Minha Maquina Simples EC2"
+  associate_public_ip_address = true
+  key_name = "erika-dev-keypair"
+    root_block_device {
+    encrypted = true
+    volume_size = 8
   }
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.secgroup-exerc-erika2.id}"]
+  tags = {
+    Name = "ec2-erika-tf-secgroup2"
+  }
+
 }

@@ -73,15 +73,19 @@ provider "aws" {
   region = "sa-east-1"
 }
 resource "aws_instance" "web" {
-  subnet_id     = "subnet-05d2f48a5e97f0b1a"
-  ami= "ami-054a31f1b3bf90920"
+  count = 3
+  subnet_id     = "subnet-07384d1338e0f2f61"
+  ami= "ami-04526d8a7e0b5fb27"
   instance_type = "t2.micro"
+  associate_public_ip_address = true
   root_block_device {
     encrypted = true
     volume_size = 8
   }
   tags = {
-    Name = "ec2-zerati-tf"
+    Name = "ec2-erika-terraform${(count.index+1)}"
   }
 }
+
+
 # /////

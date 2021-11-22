@@ -1,34 +1,27 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "sa-east-1"
 }
 
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com" # outra opção "https://ifconfig.me"
-}
-
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners = ["099720109477"] # ou ["099720109477"] ID master com permissão para busca
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*"] # exemplo de como listar um nome de AMI - 'aws ec2 describe-images --region us-east-1 --image-ids ami-09e67e426f25ce0d7' https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-images.html
-  }
-}
-
-resource "aws_instance" "maquina_nginx_java_mysql" {
-  ami           = data.aws_ami.ubuntu.id
+resource "aws_instance" "web" {
+  subnet_id = "subnet-0e6a2c0827160332c"
+  ami = "ami-04526d8a7e0b5fb27"
   instance_type = "t2.medium"
-  key_name      = "treinamento-turma1_itau"
-  tags = {
-    Name = "maquina_ansible_com_nginx_java_mysql"
+  associate_public_ip_address = true
+  key_name = "chave-key-erika"
+  vpc_security_group_ids = ["${aws_security_group.acessos.id}"]
+  root_block_device {
+    encrypted = true
+    volume_size = 8
   }
-  vpc_security_group_ids = [aws_security_group.acessos.id]
+  tags = {
+    Name = "ec2-erika-tf-java2"
+  }
 }
 
 resource "aws_security_group" "acessos" {
   name        = "acessos nginx java mysql"
   description = "acessos nginx java mysql inbound traffic"
+  vpc_id      = "vpc-010ad4cd4b8ad8a3c"
 
   ingress = [
     {
@@ -36,7 +29,7 @@ resource "aws_security_group" "acessos" {
       from_port        = 22
       to_port          = 22
       protocol         = "tcp"
-      cidr_blocks      = ["${chomp(data.http.myip.body)}/32"]
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
       prefix_list_ids = null,
       security_groups: null,
@@ -47,7 +40,7 @@ resource "aws_security_group" "acessos" {
       from_port        = 80
       to_port          = 80
       protocol         = "tcp"
-      cidr_blocks      = ["${chomp(data.http.myip.body)}/32"]
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
       prefix_list_ids = null,
       security_groups: null,
@@ -77,9 +70,9 @@ resource "aws_security_group" "acessos" {
 # terraform refresh para mostrar o ssh
 output "aws_instance_e_ssh" {
   value = [
-    "PUBLIC_DNS=${aws_instance.maquina_nginx_java_mysql.public_dns}",
-    "PUBLIC_IP=${aws_instance.maquina_nginx_java_mysql.public_ip}",
-    "ssh -i ~/Desktop/devops/treinamentoItau ubuntu@${aws_instance.maquina_nginx_java_mysql.public_dns} -o ServerAliveInterval=60"
+    "PUBLIC_DNS=${aws_instance.web.public_dns}",
+    "PUBLIC_IP=${aws_instance.web.public_ip}",
+    "ssh -i /home/ubuntu/.ssh/id_rsa ubuntu@${aws_instance.web.public_dns} -o StrictHostKeyChecking=no"
   ]
 }
 

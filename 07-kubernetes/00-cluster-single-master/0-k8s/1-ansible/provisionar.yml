@@ -7,17 +7,17 @@
 # bash
 
 # sudo su -
-# hostname k8s-node-0
+# hostname k8s-node-1
 # echo "k8s-node-0" > /etc/hostname
 # bash
 
 # sudo su -
-# hostname k8s-node-1
+# hostname k8s-node-2
 # echo "k8s-node-1" > /etc/hostname
 # bash
 
 # sudo su -
-# hostname k8s-node-2
+# hostname k8s-node-3
 # echo "k8s-node-2" > /etc/hostname
 # bash
 
@@ -81,6 +81,35 @@
 # kubectl get pods -o wide # para ver o pod criado
 # kubectl describe pod ngnix-treinamento # descreve o pod
 # kubectl scale deployment nginx-treinamento --replicas=3 # para escalar um deployment
+
+- hosts:
+  - k8s-master
+  tasks:
+    - name: "Configura hostname k8s-master"
+      shell: hostname k8s-master && echo "k8s-master" > /etc/hostname
+      become: yes
+# ---
+- hosts:
+  - k8s-node-1
+  tasks:
+    - name: "Configura hostname k8s-node-1"
+      shell: hostname k8s-node-1 && echo "k8s-node-1" > /etc/hostname
+      become: yes
+# ---
+- hosts:
+  - k8s-node-2
+  tasks:
+    - name: "Configura hostname k8s-node-2"
+      shell: hostname k8s-node-2 && echo "k8s-node-2" > /etc/hostname
+      become: yes
+# ---
+- hosts:
+  - k8s-node-3
+  tasks:
+    - name: "Configura hostname k8s-node-3"
+      shell: hostname k8s-node-3 && echo "k8s-node-3" > /etc/hostname
+      become: yes
+
 
 - hosts: all
   tasks:

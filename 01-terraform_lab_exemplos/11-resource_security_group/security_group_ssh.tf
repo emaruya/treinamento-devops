@@ -4,15 +4,27 @@
 # ingress = [  # inbound
 # egress = [ # outbound
 
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+resource "aws_security_group" "secgroup-exerc-erika2" {
+  name        = "secgroup-exerc-erika2"
+  description = "Allow SSH and custom TCP inbound traffic"
+  vpc_id      = "vpc-010ad4cd4b8ad8a3c"  
 
   ingress = [
     {
-      description      = "SSH from VPC"
+      description      = "SSH from VPC"    
       from_port        = 22
       to_port          = 22
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids = null,
+      security_groups = null,
+      self            = null
+    },
+    {
+      description      = "Custom TCP"
+      from_port        = 80
+      to_port          = 80
       protocol         = "tcp"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
@@ -37,6 +49,6 @@ resource "aws_security_group" "allow_ssh" {
   ]
 
   tags = {
-    Name = "allow_ssh"
+    Name = "secgroup-exerc-erika2"
   }
 }

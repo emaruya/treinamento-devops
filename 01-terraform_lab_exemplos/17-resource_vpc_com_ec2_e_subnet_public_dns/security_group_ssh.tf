@@ -5,8 +5,8 @@
 # egress = [ # outbound
 
 resource "aws_security_group" "allow_ssh_terraform" {
-  name        = "allow_ssh_terraform2"
-  description = "Allow SSH inbound traffic"
+  name        = "sec-group-erika-tf"
+  description = "Allow SSH and custom TCP inbound traffic"
   vpc_id      = aws_vpc.my_vpc.id
 
   ingress = [
@@ -38,10 +38,10 @@ resource "aws_security_group" "allow_ssh_terraform" {
   ]
 
   tags = {
-    Name = "allow_ssh_terraform"
+    Name = "sec-group-erika-tf"
   }
 }
 
-output "allow_ssh_terraform" {
+output "sec-group-erika-tf" {
   value = aws_security_group.allow_ssh_terraform.id
 }

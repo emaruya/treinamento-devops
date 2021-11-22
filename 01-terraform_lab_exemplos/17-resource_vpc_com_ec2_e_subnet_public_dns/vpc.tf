@@ -1,58 +1,84 @@
 resource "aws_vpc" "my_vpc" {
-  cidr_block = "172.17.0.0/16"
+  cidr_block = "10.100.0.0/16"
   enable_dns_hostnames = true
 
   tags = {
-    Name = "TerraformVPCPublicSubnet"
+    Name = "vpc-erika-tf"
   }
 }
 
 resource "aws_subnet" "my_subnet" {
   vpc_id            = aws_vpc.my_vpc.id
-  cidr_block        = "172.17.0.0/16"
-  availability_zone = "us-east-1a"
+  cidr_block        = "10.100.1.0/24"
+  availability_zone = "sa-east-1a"
 
   tags = {
-    Name = "tf-lab-danilo-subnet"
+    Name = "subnet-erika-tf-1a"
   }
 }
 
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.my_vpc.id
+resource "aws_subnet" "my_subnet2" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.100.2.0/24"
+  availability_zone = "sa-east-1b"
 
   tags = {
-    Name = "aws_internet_gateway_terraform"
+    Name = "subnet-erika-tf-1b"
   }
 }
+
+resource "aws_subnet" "my_subnet3" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.100.3.0/24"
+  availability_zone = "sa-east-1c"
+
+  tags = {
+    Name = "subnet-erika-tf-1c"
+  }
+}
+
+resource "aws_subnet" "my_subnet4" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.100.4.0/24"
+  availability_zone = "sa-east-1a"
+
+  tags = {
+    Name = "subnet-erika-tf-priv"
+  }
+}
+
+# resource "aws_internet_gateway" "gw" {
+#   vpc_id = aws_vpc.my_vpc.id
+
+#   tags = {
+#     Name = "igwy-erika-tf"
+#   }
+# }
 
 resource "aws_route_table" "rt_terraform" {
   vpc_id = aws_vpc.my_vpc.id
 
   route = [
-      {
-        carrier_gateway_id         = ""
-        cidr_block                 = "0.0.0.0/0"
-        destination_prefix_list_id = ""
-        egress_only_gateway_id     = ""
-        gateway_id                 = aws_internet_gateway.gw.id
-        instance_id                = ""
-        ipv6_cidr_block            = ""
-        local_gateway_id           = ""
-        nat_gateway_id             = ""
-        network_interface_id       = ""
-        transit_gateway_id         = ""
-        vpc_endpoint_id            = ""
-        vpc_peering_connection_id  = ""
-      }
+      
   ]
 
   tags = {
-    Name = "route_table_terraform"
+    Name = "rt-erika-tf"
   }
 }
 
 resource "aws_route_table_association" "a" {
   subnet_id      = aws_subnet.my_subnet.id
+  route_table_id = aws_route_table.rt_terraform.id
+}
+
+resource "aws_route_table_association" "b" {
+  subnet_id      = aws_subnet.my_subnet2.id
+  route_table_id = aws_route_table.rt_terraform.id
+}
+
+resource "aws_route_table_association" "c" {
+  subnet_id      = aws_subnet.my_subnet3.id
   route_table_id = aws_route_table.rt_terraform.id
 }
 

@@ -1,24 +1,28 @@
 provider "aws" {
-  region = "us-east-1"
-}
-
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com" # outra opção "https://ifconfig.me"
+  region = "sa-east-1"
 }
 
 resource "aws_instance" "jenkins" {
-  ami           = "ami-09e67e426f25ce0d7"
-  instance_type = "t2.large"
-  key_name      = "treinamento-turma1_itau"
+  subnet_id                   = "subnet-0e6a2c0827160332c"
+  iam_instance_profile        = "aws-cli-ec2"
+  ami                         = "ami-04526d8a7e0b5fb27"
+  instance_type               = "t2.large"
+  associate_public_ip_address = true
+  key_name                    = "chave-key-erika"
+  root_block_device {
+    encrypted   = true
+    volume_size = 8
+  }
   tags = {
-    Name = "jenkins"
+    Name = "jenkins-erika"
   }
   vpc_security_group_ids = ["${aws_security_group.jenkins.id}"]
 }
 
 resource "aws_security_group" "jenkins" {
-  name        = "acessos_jenkins"
+  name        = "acessos_jenkins-erika"
   description = "acessos_jenkins inbound traffic"
+  vpc_id      = "vpc-010ad4cd4b8ad8a3c"
 
   ingress = [
     {
@@ -26,7 +30,7 @@ resource "aws_security_group" "jenkins" {
       from_port        = 22
       to_port          = 22
       protocol         = "tcp"
-      cidr_blocks      = ["${chomp(data.http.myip.body)}/32"]
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
       prefix_list_ids  = null,
       security_groups : null,
@@ -37,7 +41,7 @@ resource "aws_security_group" "jenkins" {
       from_port        = 8080
       to_port          = 8080
       protocol         = "tcp"
-      cidr_blocks      = ["${chomp(data.http.myip.body)}/32"]
+      cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
       prefix_list_ids  = null,
       security_groups : null,
@@ -60,7 +64,7 @@ resource "aws_security_group" "jenkins" {
   ]
 
   tags = {
-    Name = "jenkins-lab"
+    Name = "acessos_jenkins-erika"
   }
 }
 
@@ -72,6 +76,6 @@ output "jenkins" {
     "private: ${aws_instance.jenkins.private_ip}",
     "public: ${aws_instance.jenkins.public_ip}",
     "public_dns: ${aws_instance.jenkins.public_dns}",
-    "ssh -i ~/Desktop/devops/treinamentoItau ubuntu@${aws_instance.jenkins.public_dns}"
+    "ssh -i /home/ubuntu/.ssh/id_rsa ubuntu@${aws_instance.jenkins.public_dns}"
   ]
 }

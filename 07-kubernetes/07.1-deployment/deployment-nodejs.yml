@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-deployment
+  name: java-deployment
   # namespace: umnamespace # para colocar em um namespace diferente
 spec:
   template:
     metadata:
-      name: pod-nodejs
+      name: emaruya-java
       labels:
-        app: lable-pod-nodejs
+        app: emaruya-java
     spec:
       containers:
-        - name: container-nodejs
-          image: didox/app-imersao-docker-nodejs
+        - name: container-pod-java
+          image: emaruya/validador-cpf-java-turma-devops:0.0.1
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
           # env:
           #   - name: "DATABASE_URLS"
           #     value: "https://usuario@senha:mysql.server:3306"
   replicas: 3
   selector:
     matchLabels:
-      app: lable-pod-nodejs
+      app: emaruya-java
 
 
 # $ kubectl apply -f deployment-nodejs.yml

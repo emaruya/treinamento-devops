@@ -1,2 +1,11 @@
-[ec2-k8s-worker]
-ec2-54-160-239-118.compute-1.amazonaws.com
+[k8s-master]
+ec2-52-67-81-96.sa-east-1.compute.amazonaws.com
+
+[k8s-node-1]
+ec2-18-231-106-194.sa-east-1.compute.amazonaws.com
+
+[k8s-node-2]
+ec2-54-233-184-44.sa-east-1.compute.amazonaws.com
+
+[k8s-node-3]
+ec2-52-67-161-190.sa-east-1.compute.amazonaws.com

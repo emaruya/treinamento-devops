@@ -15,9 +15,9 @@
         state: latest
       become: yes # roda com sudo
       with_items:
-        - php7.2
+        - php7.4
         - apache2
-        - libapache2-mod-php7.2
+        - libapache2-mod-php7.4
         - php-mysql
         - php-curl
         - mysql-server
@@ -63,11 +63,11 @@
       notify:
         - "restart apache"
   
-    - name: "Lavanta serviço do mysql"
-      become: yes
-      service:
-        name: mysql
-        state: started
+    # - name: "Lavanta serviço do mysql"
+    #   become: yes
+    #   service:
+    #     name: mysql
+    #     state: started
 
     # - name: "Criando senha root mysql"
     #   become: yes
@@ -84,15 +84,20 @@
     #     login_password: root
     #     state: present
 
-    - name: "Copiando novo tema WP"
+    - name: "Copiando novo tema Bootstrap"
       copy:
-        src: "thema/generatepress.3.0.3.zip"
-        dest: "/tmp/generatepress.3.0.3.zip"
+        src: "template/startbootstrap-creative-gh-pages.zip"
+        dest: "/tmp/startbootstrap-creative-gh-pages.zip"
       become: yes
 
     - name: "Descompactar na pasta do thema"
       unarchive:
-        src: "/tmp/generatepress.3.0.3.zip"
+        src: "/tmp/startbootstrap-creative-gh-pages.zip"
         dest: "/var/www/wordpress/wp-content/themes/"
         remote_src: yes
       become: yes
+
+    - shell: cat /var/www/wordpress/wp-config.php
+      register: ps
+    - debug:
+        msg: " '{{ ps.stdout_lines }}' "
