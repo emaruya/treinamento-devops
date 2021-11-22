@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_instance" "dev_img_deploy_jenkins" {
   subnet_id                   = "subnet-0e6a2c0827160332c"
-  ami                         = "ami-04526d8a7e0b5fb27"
+  ami                         = "ami-0cf8150492903d1d2"
   instance_type = "t2.micro"
   associate_public_ip_address = true
   key_name                    = "chave-key-erika"
