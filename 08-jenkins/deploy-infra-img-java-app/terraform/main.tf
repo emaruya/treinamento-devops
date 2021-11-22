@@ -10,7 +10,7 @@ resource "aws_instance" "dev_img_deploy_jenkins" {
   key_name                    = "chave-key-erika"
   root_block_device {
     encrypted   = true
-    volume_size = 8
+    volume_size = 30
   }
   tags = {
     Name = "dev-img-deploy-jenkins-erika"
